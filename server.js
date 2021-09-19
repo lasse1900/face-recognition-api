@@ -1,9 +1,54 @@
 const express = require('express');
 
 const app = express();
+app.use(express.json());
 
-app.get('/', (req,res)=> {
-  res.send('This is working');
+const database = {
+  users: [
+    {
+      id: '123',
+      name: 'John',
+      email: 'john@email.com',
+      password: 'secret',
+      entries: 0,
+      joined: new Date()
+    },
+    {
+      id: '124',
+      name: 'Sally',
+      email: 'sally@email.com',
+      password: 'secret1',
+      entries: 0,
+      joined: new Date()
+    }
+  ]
+}
+
+app.get('/', (req, res) => {
+  res.send(database.users);
+})
+
+app.post('/signin', (req, res) => {
+  if (req.body.email === database.users[0].email &&
+    req.body.password === database.users[0].password) {
+    res.json('success');
+  } else {
+    res.status(400).json("error happened");
+  }
+  res.json('signin');
+})
+
+app.post('/register', (req, res) => {
+  const { email, name, password } = req.body;
+  database.users.push({
+    id: '125',
+    name: name,
+    email: email,
+    password: password,
+    entries: 0,
+    joined: new Date()
+  })
+  res.json(database.users[database.users.length - 1]);
 })
 
 app.listen(3000, () => {
