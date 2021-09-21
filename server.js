@@ -20,7 +20,7 @@ app.use(cors());
 app.get('/', (req, res) => { res.send(db.users) })
 
 app.get('/', (req, res) => {
-  res.send(database.users);
+  res.send('success - route not in use');
 })
 
 app.post('/signin', (req, res) => {
