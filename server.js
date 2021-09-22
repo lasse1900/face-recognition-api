@@ -5,6 +5,8 @@ const knex = require('knex');
 
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
+const profile = require('./controllers/profile');
+// const image = require('./controllers/image');
 
 const db = knex({
   client: 'pg',
@@ -21,26 +23,9 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/', (req, res) => { res.send(db.users) })
-
-app.get('/', (req, res) => {
-  res.send('success - route not in use');
-})
-
 app.post('/signin', (req, res) => { signin.handleSignin(req, res, db, bcrypt) })
-
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
-
-app.get('/profile/:id', (req, res) => {
-  const { id } = req.params;
-  db.select('*').from('users').where({ id }).then(user => {
-    if (user.length) {
-      res.json(user[0]);
-    } else {
-      res.status(400).json('not found');
-    }
-  })
-    .catch(err => res.status(400).json('error geting user'));
-})
+app.post('/profile', (req, res) => { profile.handleProfile(req, res, db) })
 
 app.put('/image', (req, res) => {
   const { id } = req.body;
@@ -54,5 +39,5 @@ app.put('/image', (req, res) => {
 })
 
 app.listen(3000, () => {
-  console.log('app is running on port 3000')
+  console.log('app is running on port 3000');
 })
